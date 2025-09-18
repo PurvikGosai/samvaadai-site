@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OG Image Generator</title>
+    <style>
+        body { margin: 0; padding: 20px; font-family: system-ui, -apple-system, sans-serif; }
+        .og-container { 
+            width: 1200px; 
+            height: 630px; 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .content { 
+            position: absolute; 
+            left: 120px; 
+            top: 120px; 
+            z-index: 10;
+        }
+        .logo { 
+            width: 64px; 
+            height: 64px; 
+            background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 50%, #059669 100%); 
+            border-radius: 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .brand-name { 
+            font-size: 36px; 
+            font-weight: 700; 
+            color: #0f172a; 
+            margin-left: 80px;
+            margin-top: -64px;
+            margin-bottom: 40px;
+        }
+        .ai-text { color: #7c3aed; }
+        .headline { 
+            font-size: 48px; 
+            font-weight: 800; 
+            color: #0f172a; 
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        .headline-accent { 
+            color: #7c3aed; 
+        }
+        .subtitle { 
+            font-size: 24px; 
+            color: #64748b; 
+            margin-bottom: 40px;
+            line-height: 1.4;
+        }
+        .language-pills { 
+            display: flex; 
+            gap: 15px; 
+        }
+        .pill { 
+            padding: 8px 16px; 
+            background: rgba(126, 58, 237, 0.1); 
+            border-radius: 16px; 
+            color: #7c3aed; 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+        .stats { 
+            position: absolute; 
+            bottom: 120px; 
+            left: 120px; 
+            display: flex; 
+            gap: 40px;
+        }
+        .stat { 
+            color: #7c3aed; 
+            font-weight: 700; 
+            font-size: 16px;
+        }
+        .website { 
+            position: absolute; 
+            bottom: 60px; 
+            right: 120px; 
+            color: #64748b; 
+            font-size: 18px; 
+            font-weight: 600;
+        }
+        .bot-container { 
+            position: absolute; 
+            right: 150px; 
+            top: 150px;
+        }
+        .bot { 
+            width: 120px; 
+            height: 140px; 
+            background: white; 
+            border: 3px solid #7c3aed; 
+            border-radius: 20px; 
+            position: relative;
+        }
+        .bot-head { 
+            width: 80px; 
+            height: 60px; 
+            background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%); 
+            border-radius: 12px; 
+            position: absolute; 
+            top: -30px; 
+            left: 20px;
+        }
+        .bot-screen { 
+            width: 60px; 
+            height: 30px; 
+            background: #f8fafc; 
+            border: 2px solid #7c3aed; 
+            border-radius: 8px; 
+            position: absolute; 
+            top: 40px; 
+            left: 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 600; 
+            color: #7c3aed; 
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="og-container">
+        <div class="content">
+            <div class="logo">🤖</div>
+            <div class="brand-name">Samvaad<span class="ai-text">AI</span></div>
+            <div class="headline">
+                Multilingual AI Agents<br>
+                <span class="headline-accent">for Indian Businesses</span>
+            </div>
+            <div class="subtitle">
+                AI chatbots, calling agents & store managers that speak<br>
+                your customer's language
+            </div>
+            <div class="language-pills">
+                <div class="pill">नमस्ते</div>
+                <div class="pill">வணக்கம்</div>
+                <div class="pill">হ্যালো</div>
+                <div class="pill">Hello</div>
+            </div>
+        </div>
+        
+        <div class="bot-container">
+            <div class="bot">
+                <div class="bot-head"></div>
+                <div class="bot-screen">AI</div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">10+ Languages</div>
+            <div class="stat">500+ Businesses</div>
+            <div class="stat">24/7 Support</div>
+        </div>
+        
+        <div class="website">samvaadai.com</div>
+    </div>
+    
+    <script>
+        // Instructions: Open this file in browser, then use browser dev tools or screenshot tool to capture as PNG
+        console.log('To generate PNG: Take a screenshot of the og-container div or use browser dev tools to export as image');
+    </script>
+</body>
+</html>

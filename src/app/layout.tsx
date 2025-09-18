@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "SamvaadAI",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "SamvaadAI - Multilingual AI Agents for Indian Businesses",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     title: "SamvaadAI - Multilingual AI Agents for Indian Businesses",
     description:
       "Transform your business with AI chatbots, calling agents, and store managers that speak your customer's language.",
-    images: ["/og-image.svg"],
+    images: ["/og-image.png"],
     creator: "@samvaadai",
   },
   robots: {
