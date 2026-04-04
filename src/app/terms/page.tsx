@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Terms of Service | SamvaadAI LLP",
     description:
-        "Terms and conditions for using our platform.",
+        "Terms of service for using our platform.",
 };
 
 export default function TermsOfService() {
