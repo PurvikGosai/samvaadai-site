@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Terms of Service | SamvaadAI LLP",
     description:
-        "How SamvaadAI LLP collects, uses, and protects data on its SamvaadAI WhatsApp Business SaaS platform.",
+        "Terms of service for using our platform.",
 };
 
 export default function TermsOfService() {
