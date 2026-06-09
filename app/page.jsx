@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import SamvaadIntroAnimation from "./SamvaadIntroAnimation";
 import { homeMarkup } from "./homeMarkup";
 
 const tourViews = {
@@ -46,26 +47,19 @@ const tourViews = {
   },
 };
 
+const homepageMarkupWithoutLegacyIntro = homeMarkup.replace(
+  /^[\s\S]*?<header class="site-header">/,
+  '<header class="site-header">'
+);
+
 export default function HomePage() {
+  const [introComplete, setIntroComplete] = useState(false);
+
   useEffect(() => {
     const modal = document.querySelector(".video-modal");
     const modalVideo = modal?.querySelector("video");
     const menuButton = document.querySelector(".menu-button");
     const header = document.querySelector(".site-header");
-    const startupIntro = document.querySelector("[data-startup-intro]");
-    let startupTimer;
-
-    const hideStartupIntro = () => {
-      clearTimeout(startupTimer);
-      startupIntro?.classList.add("is-hidden");
-      document.body.classList.remove("intro-playing");
-    };
-
-    document.body.classList.add("intro-playing");
-    startupTimer = window.setTimeout(hideStartupIntro, 6000);
-
-    const skipButton = document.querySelector("[data-skip-intro]");
-    skipButton?.addEventListener("click", hideStartupIntro);
 
     const openVideoButtons = [...document.querySelectorAll("[data-open-video]")];
     const openVideo = () => {
@@ -133,9 +127,6 @@ export default function HomePage() {
     if (year) year.textContent = new Date().getFullYear();
 
     return () => {
-      clearTimeout(startupTimer);
-      document.body.classList.remove("intro-playing");
-      skipButton?.removeEventListener("click", hideStartupIntro);
       openVideoButtons.forEach((button) => button.removeEventListener("click", openVideo));
       closeButton?.removeEventListener("click", closeVideo);
       modal?.removeEventListener("click", backdropClose);
@@ -146,5 +137,18 @@ export default function HomePage() {
     };
   }, []);
 
-  return <div dangerouslySetInnerHTML={{ __html: homeMarkup }} />;
+  return (
+    <>
+      <SamvaadIntroAnimation onComplete={() => setIntroComplete(true)} />
+      <div
+        className="main-site-shell"
+        style={{
+          opacity: introComplete ? 1 : 0,
+          transform: introComplete ? "translateY(0)" : "translateY(12px)",
+          transition: "opacity 720ms ease, transform 720ms ease",
+        }}
+        dangerouslySetInnerHTML={{ __html: homepageMarkupWithoutLegacyIntro }}
+      />
+    </>
+  );
 }
