@@ -2,31 +2,40 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  CalendarCheck,
-  FileText,
-  HeartPulse,
-  MessageCircle,
-  PhoneCall,
-  Pill,
-  Smartphone,
-  Stethoscope,
-  UserRound,
-} from "lucide-react";
 
 type SamvaadIntroAnimationProps = {
   onComplete?: () => void;
 };
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const ease = [0.16, 1, 0.3, 1] as const;
 
-const journeySteps = [
-  { label: "Call Received", Icon: PhoneCall, delay: 1.62, x: 112, y: 156 },
-  { label: "Appointment Booked", Icon: CalendarCheck, delay: 1.84, x: 250, y: 94 },
-  { label: "Doctor Consultation", Icon: Stethoscope, delay: 2.08, x: 394, y: 153 },
-  { label: "Digital Prescription", Icon: FileText, delay: 2.44, x: 540, y: 94 },
-  { label: "WhatsApp Updates", Icon: MessageCircle, delay: 2.68, x: 682, y: 153 },
-  { label: "Medicine Reminders", Icon: Pill, delay: 2.9, x: 822, y: 94 },
+const networkNodes = [
+  { x: 290, y: 132, delay: 1.02 },
+  { x: 382, y: 72, delay: 1.08 },
+  { x: 498, y: 112, delay: 1.14 },
+  { x: 604, y: 68, delay: 1.2 },
+  { x: 692, y: 142, delay: 1.26 },
+  { x: 620, y: 232, delay: 1.32 },
+  { x: 492, y: 252, delay: 1.38 },
+  { x: 365, y: 214, delay: 1.44 },
+  { x: 452, y: 172, delay: 1.5 },
+  { x: 548, y: 182, delay: 1.56 },
+];
+
+const networkLines = [
+  [0, 1],
+  [1, 2],
+  [2, 3],
+  [3, 4],
+  [4, 5],
+  [5, 6],
+  [6, 7],
+  [7, 0],
+  [1, 8],
+  [8, 9],
+  [9, 4],
+  [2, 9],
+  [6, 8],
 ];
 
 export default function SamvaadIntroAnimation({ onComplete }: SamvaadIntroAnimationProps) {
@@ -36,12 +45,31 @@ export default function SamvaadIntroAnimation({ onComplete }: SamvaadIntroAnimat
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 24 }, (_, index) => ({
+      Array.from({ length: 70 }, (_, index) => {
+        const side = index % 4;
+        const startX = side === 0 ? -12 : side === 1 ? 112 : 10 + ((index * 29) % 80);
+        const startY = side === 2 ? -12 : side === 3 ? 112 : 8 + ((index * 17) % 84);
+        return {
+          id: index,
+          startX,
+          startY,
+          endX: 42 + ((index * 11) % 17),
+          endY: 39 + ((index * 7) % 22),
+          delay: (index % 18) * 0.035,
+          size: 2 + (index % 4),
+          depth: 0.55 + (index % 5) * 0.12,
+        };
+      }),
+    []
+  );
+
+  const logoParticles = useMemo(
+    () =>
+      Array.from({ length: 34 }, (_, index) => ({
         id: index,
-        left: `${6 + ((index * 17) % 88)}%`,
-        top: `${9 + ((index * 31) % 78)}%`,
-        delay: 0.25 + index * 0.055,
-        size: 2 + (index % 3),
+        x: 50 + Math.cos(index * 0.78) * (18 + (index % 5) * 4),
+        y: 49 + Math.sin(index * 0.78) * (10 + (index % 4) * 5),
+        delay: 3.25 + (index % 10) * 0.025,
       })),
     []
   );
@@ -50,11 +78,11 @@ export default function SamvaadIntroAnimation({ onComplete }: SamvaadIntroAnimat
     if (hasFinishedRef.current) return;
     hasFinishedRef.current = true;
     setVisible(false);
-    window.setTimeout(() => onComplete?.(), reduceMotion ? 0 : 520);
+    window.setTimeout(() => onComplete?.(), reduceMotion ? 0 : 540);
   };
 
   useEffect(() => {
-    const timer = window.setTimeout(finish, reduceMotion ? 900 : 5350);
+    const timer = window.setTimeout(finish, reduceMotion ? 900 : 5200);
     const handleScroll = () => {
       if (window.scrollY > 8) finish();
     };
@@ -73,297 +101,299 @@ export default function SamvaadIntroAnimation({ onComplete }: SamvaadIntroAnimat
     <AnimatePresence>
       {visible ? (
         <motion.section
-          aria-label="SamvaadAI patient journey intro animation"
-          className="fixed inset-0 z-[80] flex min-h-screen items-center justify-center overflow-hidden bg-white text-slate-950"
-          exit={{ opacity: 0, scale: 1.012 }}
-          transition={{ duration: 0.55, ease }}
+          aria-label="SamvaadAI cinematic 3D logo reveal animation"
+          className="fixed inset-0 z-[80] flex min-h-screen items-center justify-center overflow-hidden bg-[#020b18] text-white"
+          exit={{ opacity: 0, scale: 1.018 }}
+          transition={{ duration: 0.56, ease }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_38%,rgba(32,199,198,.18),transparent_28%),radial-gradient(circle_at_78%_54%,rgba(10,127,188,.13),transparent_30%),linear-gradient(135deg,#ffffff_0%,#f4fbfb_48%,#eef8f9_100%)]" />
-          <div className="absolute inset-0 opacity-[.18] [background-image:linear-gradient(rgba(7,29,56,.1)_1px,transparent_1px),linear-gradient(90deg,rgba(7,29,56,.1)_1px,transparent_1px)] [background-size:64px_64px]" />
-          <div className="absolute left-1/2 top-1/2 h-[720px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-200/30" />
-          <div className="absolute left-1/2 top-1/2 h-[510px] w-[510px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-200/25" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(32,199,198,.22),transparent_30%),radial-gradient(circle_at_70%_28%,rgba(10,127,188,.2),transparent_28%),linear-gradient(145deg,#020713_0%,#06192e_48%,#020713_100%)]" />
+          <motion.div
+            className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(2,7,19,.2)_40%,rgba(0,0,0,.76)_100%)]"
+            animate={{ opacity: [0.62, 0.92, 0.72] }}
+            transition={{ duration: 5, ease }}
+          />
+          <div className="absolute inset-0 opacity-[.11] [background-image:linear-gradient(rgba(183,243,239,.14)_1px,transparent_1px),linear-gradient(90deg,rgba(183,243,239,.12)_1px,transparent_1px)] [background-size:76px_76px]" />
+          <div className="absolute left-1/2 top-1/2 h-[740px] w-[740px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-300/10" />
+          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-200/10" />
+
+          <motion.div
+            className="absolute left-1/2 top-1/2 h-[530px] w-[530px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-300/10 blur-3xl"
+            animate={{ opacity: [0.18, 0.46, 0.28], scale: [0.82, 1.12, 0.96] }}
+            transition={{ duration: 5, ease }}
+          />
 
           {particles.map((particle) => (
             <motion.span
               key={particle.id}
-              className="absolute rounded-full bg-cyan-300 shadow-[0_0_16px_rgba(32,199,198,.55)]"
+              className="absolute rounded-full bg-cyan-200 shadow-[0_0_18px_rgba(32,199,198,.75)]"
               style={{
-                left: particle.left,
-                top: particle.top,
                 height: particle.size,
+                left: `${particle.startX}%`,
+                top: `${particle.startY}%`,
                 width: particle.size,
               }}
-              initial={{ opacity: 0, scale: 0.35, y: 12 }}
-              animate={{ opacity: [0, 0.52, 0], scale: [0.35, 1, 0.55], y: [8, -18] }}
-              transition={{ delay: particle.delay, duration: 3.6, repeat: Infinity, repeatDelay: 1.2 }}
+              initial={{ opacity: 0, scale: 0.25, x: 0, y: 0 }}
+              animate={{
+                opacity: [0, 0.95, 0.72, 0],
+                scale: [0.25, particle.depth, particle.depth * 1.2, 0.35],
+                x: [`0vw`, `${particle.endX - particle.startX}vw`, `${51 - particle.startX}vw`],
+                y: [`0vh`, `${particle.endY - particle.startY}vh`, `${49 - particle.startY}vh`],
+              }}
+              transition={{
+                delay: particle.delay,
+                duration: 3.35,
+                ease,
+                times: [0, 0.34, 0.72, 1],
+              }}
             />
           ))}
 
-          <div className="relative h-[650px] w-full max-w-6xl px-4 md:h-[700px]">
+          <div className="relative h-[650px] w-full max-w-6xl px-5 md:h-[700px]" style={{ perspective: 1200 }}>
             <motion.div
-              className="absolute left-1/2 top-[7%] z-50 -translate-x-1/2 rounded-full border border-cyan-200/80 bg-white/70 px-4 py-2 text-center text-[10px] font-extrabold uppercase tracking-[.3em] text-slate-500 shadow-[0_18px_60px_rgba(7,29,56,.08)] backdrop-blur-2xl md:top-[8%]"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease }}
+              className="absolute left-1/2 top-[9%] z-40 -translate-x-1/2 rounded-full border border-cyan-200/15 bg-white/5 px-4 py-2 text-center text-[10px] font-extrabold uppercase tracking-[.32em] text-cyan-100/70 shadow-[0_20px_70px_rgba(0,0,0,.28)] backdrop-blur-2xl"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: [0, 1, 1, 0], y: [-12, 0, 0, -8] }}
+              transition={{ duration: 3.4, times: [0, 0.16, 0.74, 1], ease }}
             >
-              Patient Journey
+              Intelligent Healthcare Communication
             </motion.div>
 
             <motion.div
-              className="absolute left-[6%] top-[31%] z-30 md:left-[10%] md:top-[34%]"
-              initial={{ opacity: 0, x: -26, scale: 0.9 }}
-              animate={{ opacity: [0, 1, 1, 0], x: [-26, 0, 0, 16], scale: [0.9, 1, 1, 0.96] }}
-              transition={{ duration: 1.24, times: [0, 0.22, 0.72, 1], ease }}
+              className="absolute left-1/2 top-[45%] z-20 h-[360px] w-[min(92vw,900px)] -translate-x-1/2 -translate-y-1/2"
+              initial={{ opacity: 0, rotateX: 12, rotateY: -22, scale: 0.84 }}
+              animate={{
+                opacity: [0, 1, 1, 0],
+                rotateX: [12, 0, 10, 58],
+                rotateY: [-22, 0, 62, 94],
+                scale: [0.84, 1, 0.86, 0.36],
+                y: [0, 0, -8, 32],
+              }}
+              transition={{ delay: 0.88, duration: 2.28, times: [0, 0.25, 0.72, 1], ease }}
+              style={{ transformStyle: "preserve-3d" }}
             >
-              <div className="relative flex items-center gap-5 rounded-[34px] border border-white/80 bg-white/72 p-4 shadow-[0_24px_70px_rgba(7,29,56,.13)] backdrop-blur-2xl md:p-5">
-                <div className="relative grid h-20 w-20 place-items-center rounded-full bg-gradient-to-br from-cyan-50 to-blue-50 shadow-inner md:h-24 md:w-24">
-                  <motion.span
-                    className="absolute inset-2 rounded-full border border-cyan-200"
-                    animate={{ scale: [0.94, 1.05, 0.94], opacity: [0.55, 1, 0.55] }}
-                    transition={{ duration: 1.1, repeat: Infinity }}
-                  />
-                  <UserRound className="h-10 w-10 text-[#0a7fbc] md:h-12 md:w-12" strokeWidth={1.7} />
-                </div>
-                <div className="relative grid h-24 w-14 place-items-end rounded-[22px] border border-slate-200 bg-slate-950 p-2 shadow-[0_20px_50px_rgba(7,29,56,.2)] md:h-28 md:w-16">
-                  <div className="absolute inset-2 rounded-[17px] bg-gradient-to-b from-[#102942] to-[#06192e]" />
-                  <Smartphone className="relative mb-8 h-7 w-7 text-cyan-100" strokeWidth={1.8} />
-                  <motion.button
-                    aria-label="Patient taps call button"
-                    className="relative mb-1 grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-[#20c7c6] to-[#0a7fbc] text-white shadow-[0_0_25px_rgba(32,199,198,.72)]"
-                    animate={{ scale: [1, 0.88, 1.08, 1] }}
-                    transition={{ delay: 0.28, duration: 0.44, ease }}
-                    type="button"
-                  >
-                    <PhoneCall className="h-4 w-4" strokeWidth={2} />
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
+              <svg className="h-full w-full overflow-visible" viewBox="0 0 980 340" fill="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="neuralStroke" x1="240" x2="760" y1="40" y2="290">
+                    <stop stopColor="#0a7fbc" />
+                    <stop offset=".52" stopColor="#20c7c6" />
+                    <stop offset="1" stopColor="#8ee8c7" />
+                  </linearGradient>
+                  <filter id="neuralGlow" x="-30%" y="-60%" width="160%" height="220%">
+                    <feGaussianBlur stdDeviation="4" result="blur" />
+                    <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.1 0 0 0 0 0.78 0 0 0 0 0.76 0 0 0 .8 0" />
+                    <feBlend in="SourceGraphic" />
+                  </filter>
+                </defs>
 
-            <svg className="absolute inset-x-0 top-[33%] z-20 mx-auto h-[300px] w-[96%] max-w-[1050px] overflow-visible md:top-[32%]" viewBox="0 0 1050 300" fill="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="journeyGradient" x1="40" x2="1010" y1="0" y2="0">
-                  <stop stopColor="#0a7fbc" />
-                  <stop offset=".5" stopColor="#20c7c6" />
-                  <stop offset="1" stopColor="#8ee8c7" />
-                </linearGradient>
-                <filter id="journeyGlow" x="-20%" y="-80%" width="140%" height="260%">
-                  <feGaussianBlur stdDeviation="5" result="blur" />
-                  <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.1 0 0 0 0 0.78 0 0 0 0 0.76 0 0 0 .7 0" />
-                  <feBlend in="SourceGraphic" />
-                </filter>
-              </defs>
+                {networkLines.map(([from, to], index) => {
+                  const a = networkNodes[from];
+                  const b = networkNodes[to];
+                  return (
+                    <motion.line
+                      key={`${from}-${to}`}
+                      x1={a.x}
+                      y1={a.y}
+                      x2={b.x}
+                      y2={b.y}
+                      stroke="url(#neuralStroke)"
+                      strokeLinecap="round"
+                      strokeWidth="1.6"
+                      filter="url(#neuralGlow)"
+                      pathLength={1}
+                      initial={{ opacity: 0, pathLength: 0 }}
+                      animate={{ opacity: [0, 0.9, 0.62, 0], pathLength: [0, 1, 1, 0] }}
+                      transition={{ delay: 1.02 + index * 0.035, duration: 1.9, times: [0, 0.34, 0.76, 1], ease }}
+                    />
+                  );
+                })}
 
-              <motion.path
-                d="M118 168 C178 132 225 121 292 144 C363 169 405 173 470 141 C539 108 587 108 650 145 C718 185 773 185 842 139 C899 102 946 112 1002 151"
-                stroke="url(#journeyGradient)"
-                strokeWidth="4"
-                strokeLinecap="round"
-                filter="url(#journeyGlow)"
-                pathLength={1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: [0, 0.32, 0.68, 1, 1, 0], opacity: [0, 1, 1, 1, 1, 0] }}
-                transition={{ delay: 0.42, duration: 3.85, times: [0, 0.24, 0.52, 0.74, 0.9, 1], ease }}
-              />
+                {networkNodes.map((node, index) => (
+                  <motion.g key={`${node.x}-${node.y}`}>
+                    <motion.circle
+                      cx={node.x}
+                      cy={node.y}
+                      r="11"
+                      fill="rgba(32,199,198,.14)"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: [0, 1, 0.7, 0], scale: [0, 1, 1.35, 0.3] }}
+                      transition={{ delay: node.delay, duration: 2.05, times: [0, 0.22, 0.7, 1], ease }}
+                    />
+                    <motion.circle
+                      cx={node.x}
+                      cy={node.y}
+                      r={index % 3 === 0 ? 4.8 : 3.8}
+                      fill={index % 4 === 0 ? "#8ee8c7" : "#20c7c6"}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: [0, 1, 1, 0], scale: [0, 1, 1.08, 0.4] }}
+                      transition={{ delay: node.delay, duration: 2.1, times: [0, 0.2, 0.74, 1], ease }}
+                    />
+                  </motion.g>
+                ))}
 
-              <motion.path
-                d="M124 168 C174 126 230 112 304 145 C365 172 406 173 470 141"
-                stroke="url(#journeyGradient)"
-                strokeWidth="7"
-                strokeLinecap="round"
-                pathLength={1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
-                transition={{ delay: 0.72, duration: 1.05, times: [0, 0.55, 0.84, 1], ease }}
-              />
-
-              <motion.path
-                d="M70 170 C99 170 100 170 120 170 C132 170 136 148 146 148 C158 148 158 193 170 193 C182 193 184 155 196 155 C210 155 211 170 228 170"
-                stroke="url(#journeyGradient)"
-                strokeWidth="4"
-                strokeLinecap="round"
-                pathLength={1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
-                transition={{ delay: 0.18, duration: 1.18, times: [0, 0.52, 0.84, 1], ease }}
-              />
-
-              <motion.path
-                d="M104 168 L272 168 L293 168 L313 124 L337 218 L360 168 H522 L544 168 L565 138 L588 194 L608 168 H978"
-                stroke="url(#journeyGradient)"
-                strokeWidth="6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                pathLength={1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
-                transition={{ delay: 3.42, duration: 0.82, times: [0, 0.66, 0.88, 1], ease }}
-              />
-
-              <motion.path
-                d="M616 80 C560 49 474 60 462 109 C450 157 542 156 590 177 C650 203 625 258 535 250 C472 245 427 218 394 182"
-                stroke="url(#journeyGradient)"
-                strokeWidth="9"
-                strokeLinecap="round"
-                pathLength={1}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: [0, 1], opacity: [0, 1] }}
-                transition={{ delay: 4.18, duration: 0.48, ease }}
-              />
-            </svg>
-
-            <motion.div
-              className="absolute left-1/2 top-[39%] z-40 -translate-x-1/2 -translate-y-1/2 md:top-[42%]"
-              initial={{ opacity: 0, scale: 0.45 }}
-              animate={{ opacity: [0, 1, 1, 0], scale: [0.45, 1, 1.08, 0.82] }}
-              transition={{ delay: 0.92, duration: 1.52, times: [0, 0.24, 0.76, 1], ease }}
-            >
-              <div className="relative grid h-32 w-32 place-items-center rounded-full border border-cyan-200/80 bg-white/72 shadow-[0_0_80px_rgba(32,199,198,.42),0_28px_80px_rgba(7,29,56,.14)] backdrop-blur-2xl md:h-40 md:w-40">
-                <motion.span className="absolute inset-2 rounded-full border border-cyan-300/60" animate={{ rotate: 360 }} transition={{ duration: 5, repeat: Infinity, ease: "linear" }} />
-                <motion.span className="absolute inset-7 rounded-full bg-[radial-gradient(circle,#20c7c6_0%,#0a7fbc_45%,#071d38_100%)]" animate={{ boxShadow: ["0 0 26px rgba(32,199,198,.42)", "0 0 76px rgba(32,199,198,.74)", "0 0 26px rgba(32,199,198,.42)"] }} transition={{ delay: 1, duration: 1.05, repeat: 2 }} />
-                {[0, 1, 2, 3, 4, 5].map((dot) => (
-                  <motion.span
-                    key={dot}
-                    className="absolute h-2 w-2 rounded-full bg-cyan-100 shadow-[0_0_16px_rgba(183,243,239,.9)]"
-                    style={{
-                      left: `${50 + Math.cos((dot / 6) * Math.PI * 2) * 32}%`,
-                      top: `${50 + Math.sin((dot / 6) * Math.PI * 2) * 32}%`,
-                    }}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.1 + dot * 0.06, duration: 0.22 }}
+                {[0, 1, 2].map((pulse) => (
+                  <motion.circle
+                    key={pulse}
+                    cx="500"
+                    cy="168"
+                    r="36"
+                    stroke="#20c7c6"
+                    strokeWidth="1.5"
+                    initial={{ opacity: 0, scale: 0.6 }}
+                    animate={{ opacity: [0, 0.85, 0], scale: [0.6, 2.65] }}
+                    transition={{ delay: 1.24 + pulse * 0.22, duration: 1.16, ease: "easeOut" }}
                   />
                 ))}
-                <svg className="relative h-20 w-20 md:h-24 md:w-24" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-                  <motion.path
-                    d="M50 17 C36 17 28 28 31 41 C20 48 22 66 36 71 C41 82 55 84 63 75 C78 75 86 61 78 48 C87 33 73 16 59 23 C56 20 53 17 50 17Z"
-                    stroke="white"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    pathLength={1}
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ delay: 1.12, duration: 0.52, ease }}
-                  />
-                  <motion.path
-                    d="M35 45 L50 34 L65 49 M44 66 L55 51 L67 66"
-                    stroke="#b7f3ef"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    pathLength={1}
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ delay: 1.28, duration: 0.38, ease }}
-                  />
-                </svg>
-              </div>
-            </motion.div>
-
-            <div className="absolute left-1/2 top-[42%] z-30 hidden h-[300px] w-[1050px] -translate-x-1/2 md:block">
-              {journeySteps.map(({ label, Icon, delay, x, y }) => (
-                <motion.div
-                  key={label}
-                  className="absolute -translate-x-1/2 -translate-y-1/2"
-                  style={{ left: x, top: y }}
-                  initial={{ opacity: 0, scale: 0.7, y: 16 }}
-                  animate={{ opacity: [0, 1, 1, 0.24], scale: [0.7, 1, 1, 0.93], y: [16, 0, 0, 4] }}
-                  transition={{ delay, duration: 2.1, times: [0, 0.18, 0.75, 1], ease }}
-                >
-                  <div className="flex min-w-[168px] items-center gap-3 rounded-2xl border border-white/75 bg-white/74 px-3 py-3 shadow-[0_18px_50px_rgba(7,29,56,.12)] backdrop-blur-2xl">
-                    <motion.span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-cyan-50 to-emerald-100 text-[#0a7fbc] shadow-[0_0_22px_rgba(32,199,198,.22)]" animate={{ scale: [1, 1.08, 1] }} transition={{ delay: delay + 0.14, duration: 0.48 }}>
-                      <Icon className="h-5 w-5" strokeWidth={1.8} />
-                    </motion.span>
-                    <span className="text-[12px] font-extrabold leading-tight text-slate-800">{label}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="absolute left-1/2 top-[57%] z-30 grid w-[min(92vw,420px)] -translate-x-1/2 grid-cols-2 gap-2 md:hidden">
-              {journeySteps.map(({ label, Icon, delay }) => (
-                <motion.div
-                  key={label}
-                  className="flex items-center gap-2 rounded-2xl border border-white/75 bg-white/74 px-3 py-2 shadow-[0_14px_36px_rgba(7,29,56,.1)] backdrop-blur-2xl"
-                  initial={{ opacity: 0, scale: 0.86, y: 10 }}
-                  animate={{ opacity: [0, 1, 1, 0.2], scale: [0.86, 1, 1, 0.95], y: [10, 0, 0, 2] }}
-                  transition={{ delay, duration: 2.1, times: [0, 0.18, 0.75, 1], ease }}
-                >
-                  <Icon className="h-4 w-4 shrink-0 text-[#0a7fbc]" strokeWidth={1.9} />
-                  <span className="text-[10px] font-extrabold leading-tight text-slate-800">{label}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div
-              className="absolute right-[7%] top-[45%] z-40 hidden -translate-y-1/2 md:block"
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: [0, 1, 1, 0], scale: [0.7, 1, 1.04, 0.86] }}
-              transition={{ delay: 3.28, duration: 1.02, times: [0, 0.24, 0.78, 1], ease }}
-            >
-              <div className="relative grid h-24 w-24 place-items-center rounded-full border border-emerald-200 bg-white/74 shadow-[0_0_55px_rgba(142,232,199,.45)] backdrop-blur-2xl">
-                {[0, 0.18, 0.36].map((delay) => (
-                  <motion.span key={delay} className="absolute inset-0 rounded-full border border-emerald-300" animate={{ scale: [0.72, 1.7], opacity: [0.7, 0] }} transition={{ delay: 3.36 + delay, duration: 0.86, ease: "easeOut" }} />
-                ))}
-                <HeartPulse className="h-10 w-10 text-emerald-500" strokeWidth={1.8} />
-                <span className="absolute -bottom-8 rounded-full bg-white/80 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.18em] text-emerald-600 shadow-lg">Recovery</span>
-              </div>
+              </svg>
             </motion.div>
 
             <motion.div
-              className="absolute left-1/2 top-[50%] z-50 flex w-[min(88vw,560px)] -translate-x-1/2 flex-col items-center text-center md:top-[52%]"
-              initial={{ opacity: 0, y: 18, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 4.34, duration: 0.42, ease }}
+              className="absolute left-1/2 top-[45%] z-30 h-40 w-40 -translate-x-1/2 -translate-y-1/2 md:h-52 md:w-52"
+              initial={{ opacity: 0, rotateX: 70, rotateZ: -26, scale: 0.3 }}
+              animate={{
+                opacity: [0, 0, 1, 1, 0],
+                rotateX: [70, 70, 18, 0, -18],
+                rotateZ: [-26, -26, 0, 55, 112],
+                scale: [0.3, 0.3, 1, 0.86, 0.2],
+              }}
+              transition={{ delay: 1.72, duration: 1.76, times: [0, 0.1, 0.38, 0.76, 1], ease }}
+              style={{ transformStyle: "preserve-3d" }}
             >
-              <div className="flex items-center gap-3 rounded-[30px] border border-cyan-200/70 bg-white/72 px-5 py-4 shadow-[0_28px_82px_rgba(7,29,56,.14),0_0_45px_rgba(32,199,198,.18)] backdrop-blur-2xl md:gap-4 md:px-7">
-                <svg className="h-14 w-14 md:h-16 md:w-16" viewBox="0 0 90 90" fill="none" aria-hidden="true">
-                  <motion.path
-                    d="M64 17 C52 8 29 10 23 25 C17 40 41 40 53 45 C70 52 61 72 38 70 C25 69 15 62 10 54"
-                    stroke="url(#samvaadMarkGradient)"
-                    strokeWidth="10"
-                    strokeLinecap="round"
-                    pathLength={1}
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ delay: 4.22, duration: 0.46, ease }}
-                  />
-                  <motion.path
-                    d="M18 75 C34 66 55 61 77 63"
-                    stroke="url(#samvaadMarkGradient)"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                    pathLength={1}
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: 1, opacity: 1 }}
-                    transition={{ delay: 4.46, duration: 0.34, ease }}
-                  />
+              <div className="absolute inset-0 rounded-[34%] border border-cyan-200/50 bg-[linear-gradient(135deg,rgba(255,255,255,.42),rgba(32,199,198,.18)_42%,rgba(10,127,188,.08))] shadow-[inset_0_0_44px_rgba(255,255,255,.2),0_0_80px_rgba(32,199,198,.5)] backdrop-blur-xl" />
+              <div className="absolute inset-7 rounded-full border border-emerald-200/35 bg-cyan-200/10 blur-[1px]" />
+              {[0, 1, 2].map((ring) => (
+                <motion.span
+                  key={ring}
+                  className="absolute left-1/2 top-1/2 h-[170%] w-[170%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-cyan-300/20"
+                  animate={{ opacity: [0, 0.72, 0], scale: [0.28, 1.18] }}
+                  transition={{ delay: 2.04 + ring * 0.2, duration: 1.05, ease: "easeOut" }}
+                />
+              ))}
+            </motion.div>
+
+            {logoParticles.map((particle) => (
+              <motion.span
+                key={particle.id}
+                className="absolute z-40 rounded-full bg-cyan-100 shadow-[0_0_20px_rgba(183,243,239,.9)]"
+                style={{ height: 3 + (particle.id % 3), width: 3 + (particle.id % 3) }}
+                initial={{ left: "50%", opacity: 0, scale: 0.2, top: "45%" }}
+                animate={{
+                  left: [`50%`, `${particle.x}%`, `${particle.x}%`],
+                  opacity: [0, 1, 0],
+                  scale: [0.2, 1, 0.25],
+                  top: [`45%`, `${particle.y}%`, `${particle.y}%`],
+                }}
+                transition={{ delay: particle.delay, duration: 1.05, times: [0, 0.5, 1], ease }}
+              />
+            ))}
+
+            <motion.div
+              className="absolute left-1/2 top-[46%] z-50 flex w-[min(88vw,680px)] -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center"
+              initial={{ opacity: 0, y: 30, rotateX: 12, scale: 0.86 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+              transition={{ delay: 3.48, duration: 0.76, ease }}
+              style={{ transformStyle: "preserve-3d" }}
+            >
+              <div className="relative flex items-center gap-4 rounded-[34px] border border-white/15 bg-white/[.075] px-5 py-4 shadow-[0_34px_110px_rgba(0,0,0,.45),inset_0_1px_0_rgba(255,255,255,.24),0_0_60px_rgba(32,199,198,.2)] backdrop-blur-2xl md:gap-5 md:px-8 md:py-5">
+                <motion.span
+                  className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-[-18deg] bg-gradient-to-r from-transparent via-white/55 to-transparent blur-[2px]"
+                  animate={{ x: ["0%", "430%"] }}
+                  transition={{ delay: 4.04, duration: 0.7, ease }}
+                />
+                <svg className="h-16 w-16 shrink-0 drop-shadow-[0_0_26px_rgba(32,199,198,.55)] md:h-20 md:w-20" viewBox="0 0 96 96" fill="none" aria-hidden="true">
                   <defs>
-                    <linearGradient id="samvaadMarkGradient" x1="8" x2="80" y1="8" y2="80">
-                      <stop stopColor="#0a7fbc" />
-                      <stop offset=".54" stopColor="#20c7c6" />
-                      <stop offset="1" stopColor="#8ee8c7" />
+                    <linearGradient id="logoMetal" x1="12" x2="86" y1="10" y2="86">
+                      <stop stopColor="#e8ffff" />
+                      <stop offset=".18" stopColor="#0a7fbc" />
+                      <stop offset=".56" stopColor="#20c7c6" />
+                      <stop offset="1" stopColor="#f7ffff" />
                     </linearGradient>
+                    <filter id="logoGlow" x="-40%" y="-40%" width="180%" height="180%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.1 0 0 0 0 0.78 0 0 0 0 0.76 0 0 0 .9 0" />
+                      <feBlend in="SourceGraphic" />
+                    </filter>
                   </defs>
+                  <motion.path
+                    d="M70 16 C57 7 30 10 22 27 C14 45 42 45 57 51 C78 59 66 83 38 80 C23 78 13 70 8 62"
+                    stroke="url(#logoMetal)"
+                    strokeWidth="11"
+                    strokeLinecap="round"
+                    filter="url(#logoGlow)"
+                    pathLength={1}
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ delay: 3.46, duration: 0.52, ease }}
+                  />
+                  <motion.path
+                    d="M18 82 C36 70 61 66 86 68"
+                    stroke="url(#logoMetal)"
+                    strokeWidth="5.5"
+                    strokeLinecap="round"
+                    filter="url(#logoGlow)"
+                    pathLength={1}
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ delay: 3.72, duration: 0.38, ease }}
+                  />
+                  <motion.circle cx="65" cy="19" r="4" fill="#8ee8c7" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 3.82, duration: 0.18 }} />
+                  <motion.circle cx="78" cy="31" r="3.8" fill="#20c7c6" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 3.88, duration: 0.18 }} />
+                  <motion.circle cx="67" cy="43" r="3.5" fill="#b7f3ef" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 3.94, duration: 0.18 }} />
+                  <motion.path d="M65 19 L78 31 L67 43" stroke="#8ee8c7" strokeWidth="2" strokeLinecap="round" pathLength={1} initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 0.85 }} transition={{ delay: 3.92, duration: 0.24 }} />
                 </svg>
-                <span className="text-left font-[var(--font-display)] text-4xl font-extrabold tracking-[-.08em] text-[#071d38] md:text-5xl">
-                  Samvaad<span className="bg-gradient-to-r from-[#20c7c6] to-[#0a7fbc] bg-clip-text text-transparent">AI</span>
-                </span>
+                <div className="relative text-left">
+                  <motion.div
+                    className="font-[var(--font-display)] text-[42px] font-extrabold leading-none tracking-[-.09em] text-white drop-shadow-[0_0_20px_rgba(255,255,255,.18)] md:text-[64px]"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 3.68, duration: 0.42, ease }}
+                  >
+                    Samvaad<span className="bg-gradient-to-r from-[#20c7c6] via-[#8ee8c7] to-[#0a7fbc] bg-clip-text text-transparent">AI</span>
+                  </motion.div>
+                  <div className="mt-1 h-px w-full bg-gradient-to-r from-transparent via-cyan-200/45 to-transparent" />
+                </div>
               </div>
+
+              <svg className="mt-5 h-8 w-[min(72vw,520px)] overflow-visible" viewBox="0 0 520 36" fill="none" aria-hidden="true">
+                <motion.path
+                  d="M8 18 H170 L184 18 L197 8 L211 29 L224 18 H330 L343 18 L354 11 L366 25 L378 18 H512"
+                  stroke="url(#heartbeatSweep)"
+                  strokeWidth="2.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  pathLength={1}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: [0, 1, 1, 0], opacity: [0, 1, 1, 0] }}
+                  transition={{ delay: 4.06, duration: 0.78, times: [0, 0.58, 0.86, 1], ease }}
+                />
+                <defs>
+                  <linearGradient id="heartbeatSweep" x1="8" x2="512" y1="0" y2="0">
+                    <stop stopColor="#0a7fbc" />
+                    <stop offset=".5" stopColor="#20c7c6" />
+                    <stop offset="1" stopColor="#8ee8c7" />
+                  </linearGradient>
+                </defs>
+              </svg>
+
               <motion.p
-                className="mt-4 text-sm font-extrabold tracking-[.16em] text-slate-700 md:text-base md:tracking-[.2em]"
-                initial={{ opacity: 0, y: 8 }}
+                className="mt-1 text-[11px] font-extrabold uppercase tracking-[.22em] text-cyan-50/82 md:text-sm md:tracking-[.26em]"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 4.72, duration: 0.34, ease }}
+                transition={{ delay: 4.38, duration: 0.44, ease }}
               >
-                From First Call to Full Recovery
+                Revolutionizing Communications With AI
               </motion.p>
             </motion.div>
+
+            <motion.div
+              className="absolute left-1/2 top-[46%] z-10 h-[260px] w-[min(86vw,760px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-200/20 blur-3xl"
+              animate={{ opacity: [0, 0, 0.55, 0.25], scale: [0.5, 0.5, 1.12, 1.02] }}
+              transition={{ delay: 3.15, duration: 1.55, times: [0, 0.08, 0.42, 1], ease }}
+            />
           </div>
 
           <button
             type="button"
-            className="absolute bottom-6 right-6 rounded-full border border-slate-900/10 bg-white/70 px-4 py-2 text-[11px] font-bold uppercase tracking-[.16em] text-slate-700 shadow-[0_14px_40px_rgba(7,29,56,.12)] backdrop-blur-xl transition hover:bg-white"
+            className="absolute bottom-6 right-6 z-[90] rounded-full border border-white/12 bg-white/[.07] px-4 py-2 text-[11px] font-bold uppercase tracking-[.16em] text-cyan-50/72 shadow-[0_14px_40px_rgba(0,0,0,.28)] backdrop-blur-xl transition hover:bg-white/12 hover:text-white"
             onClick={finish}
           >
             Skip intro
