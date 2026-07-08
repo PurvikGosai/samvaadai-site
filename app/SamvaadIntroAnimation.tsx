@@ -77,6 +77,7 @@ export default function SamvaadIntroAnimation({ onComplete }: SamvaadIntroAnimat
   const finish = () => {
     if (hasFinishedRef.current) return;
     hasFinishedRef.current = true;
+    document.body.classList.remove("intro-playing");
     setVisible(false);
     window.setTimeout(() => onComplete?.(), reduceMotion ? 0 : 540);
   };
